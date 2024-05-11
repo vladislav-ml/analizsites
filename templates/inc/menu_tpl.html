@@ -1,0 +1,14 @@
+{% if pages %}
+<ul class="{{ menu_class }}">
+    {% for item in pages %}
+        {% if item.h_title == 'Главная' %}
+            <li><a href="{% url 'home' %}">{{ item.h_title }}</a></li>
+        {% else %}
+            <li><a href="{{ item.get_absolute_url }}">{{ item.h_title }}</a></li>
+        {% endif %}
+    {% endfor %}
+    {% if type_menu == 2 %}
+        <li><a href="{% url 'karta-saita' %}">Карта сайта</a></li>
+    {% endif %}
+</ul>
+{% endif %}

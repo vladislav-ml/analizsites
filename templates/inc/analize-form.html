@@ -1,0 +1,8 @@
+<div class="title-form">
+    <form action="{% url 'analiz' %}" method="post" class="send-form">
+        {% csrf_token %}
+        <p><input type="url" class="url" name="url" placeholder="Введите url" required></p>
+        <div class="block-error">Ошибка! Попробуйте позже.</div>
+        <p><input type="submit" class="send-button" value="Анализировать"></p>
+    </form>
+</div>

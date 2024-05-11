@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Авторизация &mdash; {{ block.super }}{% endblock %}
+{% block description %}Авторизация пользователя{% endblock %}
+{% block content %}
+<section class="content-wraper">
+	<div class="content-main center">
+        <div class="content-index single-txt">
+            <h1 class="h-title">Авторизация</h1>
+            <form action="" method="POST" class="form-auth">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+                {{ form.as_p }}
+                <p><input type="submit" value="Войти"></p>
+                <p class="block-links-auth">
+                    <a href="{% url 'register' %}">Регистрация</a>
+                    <a href="{% url 'password_reset' %}">Забыли пароль</a>
+                </p>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

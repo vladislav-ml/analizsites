@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load form-analiz %}
+
+{% block title %}{{ page.title }} &mdash; {{ block.super }}{% endblock %}
+{% block description %}{{ page.description }}{% endblock %}
+{% block content %}
+<section class="content-wraper">
+	<div class="content-main center">
+        <h1 class="h-title">{{ page.h_title }}</h1>
+		<div class="content-index single-txt">
+			{{ page.full_text|safe }}
+		</div>
+
+		{% if form %}
+			<div class="contact-from">
+				<form action="{% url 'page' page.slug %}" method="POST">
+					{% csrf_token %}
+					{{ form.non_field_errors }}
+					{% for field in form %}
+						<p class="{{ field|get_block_class }}">
+							{% if field.name == 'captcha' %} 
+								{{ field.label_tag }}
+							{% endif %}
+							{{ field }}
+							{% for error in field.errors %}
+								<span class="help-text">{{ error }}</span>
+							{% endfor %}
+						</p>
+					{% endfor %}
+					<p><input type="submit" value="Отправить"></p>
+				</form>
+			</div>
+		{% endif %}
+
+	</div>
+</section>
+
+	{% if request.path != '/page/nashi-kontakty/' %}
+		<section class="title-wraper">
+			<div class="title-main center">
+				<div class="title-text">
+					<p>Проверка показателей сайта. Инструмент для продвижения в поисковых системах.</p>
+				</div>
+				{% show_form_analiz %}
+			</div>
+		</section>
+	{% endif %}
+	
+{% endblock %}

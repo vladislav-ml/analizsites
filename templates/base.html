@@ -1,0 +1,85 @@
+{% load static %}
+{% load menu %}
+{% load cache %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<title>{% block title%}{{ request.META|get_item:'HTTP_HOST'}}{% endblock %}</title>
+	<meta name="description" content="{% block description %}{% endblock %}">
+	<link rel="stylesheet" href="{% static 'style.css' %}">
+	<link rel="icon" href="{% static 'assets/images/favicon.ico' %}" type="image/x-icon">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="{% static 'assets/js/jquery-script.js' %}"></script>
+</head>
+<body>
+<header>
+	<div class="header-main center">
+		<span class="menu-link active"></span>
+		<div class="header-logo">
+			<p><a href="{% url 'home' %}">{{ request.META|get_item:'HTTP_HOST'}}</a></p>
+		</div>
+		<div class="nav-wraper">
+			<nav>
+				{% cache 3600 menu-header %}
+					{% show_menu 'header-menu' %}
+				{% endcache %}
+			</nav>
+			<div class="nav-close">&#215;</div>
+		</div>
+		<div class="header-sign">
+			{% if request.user.is_authenticated %}
+				<a class="profile-link" href="{% url 'profile' %}">Добро пожаловать, <i>{{ request.user.email }}</i></a>
+				<a href="{% url 'logout' %}" class="logout">Выход</a>
+				<a class="icon-profile" href="{% url 'profile' %}"></a>
+			{% else %}
+				<a href="{% url 'login' %}" class="sign-in">Вход</a>
+				<a href="{% url 'register' %}" class="registration">Регистрация</a>
+			{% endif %}
+		</div>
+	</div>
+</header>
+{% if messages %}
+	<div class="block-messages center">
+		<ul class="messages">
+			{% for message in messages %}
+				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+					{{ message }}
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
+{% endif %}
+{% block content %}
+{% endblock %}
+<footer>
+	<div class="footer-main center">
+		<div class="footer-logo">
+			<p class="footer-logo-title">{{ request.META|get_item:'HTTP_HOST'}}</p>
+			<div>
+				<p>
+					Анализ сайтов помогает выявить ошибки во внутренней и внешней оптимизации. Показывает разные метрики: ИКС, количество проиндексированных страниц в яндексе и google, безопасность сайта, техническое состояние, скорость загрузки.
+				</p>
+			</div>
+		</div>
+		<div class="footer-menu">
+			<p class="footer-title">Меню</p>
+			{% cache 3600 menu-footer %}
+			{% show_menu 'footer-menu' 2 %}
+			{% endcache %}
+		</div>
+	</div>
+</footer>
+<div class="footer-copy">
+	<p>2018-{% now 'Y' %}, analizsites.ru - анализ сайтов </p>
+</div>
+<div class="loader-wraper">
+	<p class="loader-img"></p>
+</div>
+<div class="noticie-wraper">
+	<div class="noticie-main center">
+		<p>Читая этот сайт вы даёте своё согласие на использование файлов Cookie. В противном случае, покиньте этот сайт.<button class="button-noticie">Соглашаюсь</button></p>
+	</div>
+</div>
+</body>
+</html>

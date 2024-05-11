@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Регистрация &mdash; {{ block.super }}{% endblock %}
+{% block description %}Регистрация пользователя{% endblock %}
+{% block content %}
+<section class="content-wraper">
+	<div class="content-main center">
+        <div class="content-index single-txt">
+            <h1 class="h-title">Регистрация</h1>
+            <form action="" method="POST" class="form-auth">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+                {{ form.as_p }}
+                <p><input type="submit" value="Регистрация"></p>
+                <p class="block-links-auth">Уже зарегистрированы? <a href="{% url 'login' %}">Войти</a></p>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

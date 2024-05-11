@@ -1,0 +1,92 @@
+{% load static %}
+{% load humanize %}
+
+<section class="content-wraper content-wraper-single">
+	<div class="content-main center">
+		<h1 class="h-title">Анализ сайта «{{ url|get_rus_domen }}»</h1>
+		<div class="content-main-in">
+			<div class="content-main-left">
+				{% for block in titles %}
+					<div class="content-block">
+					{% for item in block %}
+						{% if item|check_type_var %}
+							<h2>{{ item|add_no_code_resp:current_site|safe }}</h2>
+						{% else %}
+							{% if current_site|check_element:item %}
+							{% else %}
+								<div class="content-item 
+								{% if current_site|get_item:item == 'js_ya_pages' %}comtent-item-load content-load1{% elif current_site|get_item:item == 'jsfunc' %}comtent-item-load content-load2{% endif %}">
+									<p>{{ item|get_el_on_index:1 }}</p>
+									{% if current_site|get_item:item == 'js_ya_pages' %}
+											<p class="p-js-load p-load-text">
+												<span class="input-schema" data-url="{% url 'option_ajax' %}">{% csrf_token %}</span>
+
+											<script>
+												get_schema_markup("{{ current_site|get_item:'url' }}", 1);
+											</script>
+			
+											</p>
+									{% elif current_site|get_item:item == 'jsfunc' %}
+										<p class="p-js-load p-load-text"><span class="input-schema" data-url="{% url 'option_ajax' %}">{% csrf_token %}</span>
+
+										<script>
+											get_schema_markup("{{ current_site|get_item:'url' }}", 2);
+										</script>
+		
+										</p>
+									{% elif item|get_el_on_index:0 == 'favicon_url' and 'не' not in current_site|get_item:item  %}
+										<p><img src="{{ current_site|get_item:'favicon_url'}}" width="32px"></p>
+									{% else %}
+											<p>{{ current_site|get_item:item|intcomma }}</p>
+									{% endif %}
+									
+									<p class="p-icon {{ current_site|get_icon_class:item }}"></p>
+									<div class="content-item-desc">
+										{{ descriptions|get_description_metric:item|safe }}
+									</div>
+								</div>
+							{% endif %}
+
+						{% endif %}
+					{% endfor %}
+					</div>
+				{% endfor %}
+
+			{% if count_days %}
+				{% if request.user.is_authenticated %}
+						<form action="{% url 'analiz' %}" method="post" class="send-form">
+							{% csrf_token %}
+							<p><input type="hidden" class="url" name="url" value="{{ current_site|get_item:'url' }}"></p>
+							<p><input type="submit" class="send-button" value="Обновить данные"></p>
+						</form>
+				{% else %}
+					<a class="update-indicators" href="{% url 'login' %}">Войдите в аккаунт, и обновите данные.</a>
+				{% endif %}
+			{% endif %} 
+
+			</div>
+			<div class="content-main-right">
+				<h3>Дата проверки: {{ current_site|get_item:'time'}}</h3>
+				{% if current_site|get_item:'img' %}
+					<img src="{{ current_site|get_item:'img' }}" alt="{{ url }}">
+				{% else %}
+					<p>Изображение сайта не получено.</p>
+				{% endif %}
+				{% if request.user.is_authenticated %}
+					{% if current_site|get_item:'path_pdf' %}
+						<a href="{{ current_site|get_item:'path_pdf' }}" class="download-pdf">Скачать PDF отчёт</a>
+					{% else %}
+						<form action="{% url 'create_pdf' %}" method="post" class="send-form-pdf">
+							{% csrf_token %}
+							<p><input type="hidden" class="url" name="url" value="{{ current_site|get_item:'url' }}"></p>
+							<p><input type="submit" class="send-button" value="Сгенерировать PDF отчёт"></p>
+						</form>
+					{% endif %}
+				{% else %}
+					<a class="update-indicators" href="{% url 'login' %}">
+						Войдите в аккаунт, и скачайте отчёт PDF.</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</section>

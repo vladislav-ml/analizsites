@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load form-analiz %}
+
+{% block title %}Анализ сайта «{{ url|get_rus_domen }}» &mdash; {{ block.super }}{% endblock %}
+{% block description %}Анализ сайта «{{ url|get_rus_domen }}». Проверка ИКС яндекса. Технические показатели. Колво проиндексированных страниц. Параметры внутренней оптимизации.{% endblock %}
+
+{% block content %}
+    {% include 'sites/inc/single_tpl.html' %}
+<section class="title-wraper">
+	<div class="title-main center">
+		<h2 class="h-title">Анализ сайта</h2>
+		<div class="title-text">
+			<p>Проверка показателей сайта. Инструмент для продвижения в поисковых системах.</p>
+		</div>
+		{% show_form_analiz %}
+	</div>
+</section>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Профиль  {{ user.email }} &mdash; {{ block.super }}{% endblock %}
+{% block description %}Профиль  {{ user.email }} &mdash; {{ block.super }}{% endblock %}
+{% block content %}
+<section class="content-wraper">
+	<div class="content-main center">
+        <div class="content-index content-block-avatar">
+            <h1 class="h-title h-title-profile">Профиль &mdash; {{ user.email }}</h1>
+            {% if request.user.is_authenticated and request.user.email == user.email %}
+            <div class="profile-wraper">
+                <div class="profile-left">
+                    <ul class="profile-tab">
+                        <li><a href="{% url 'profile' %}">Профиль</a></li>
+                        <li><a href="{% url 'current_sites' %}">Сайты</a></li>
+                        <li><a href="{% url 'update_pswd' %}">Обновление пароля</a></li>
+                        <li><a href="{% url 'logout' %}" >Выход</a></li>
+                        <li><a href="{% url 'delete' %}">Удаление</a></li>
+                    </ul>
+                </div>
+
+
+                <div class="sort-block">
+                    <p class="sort-block-p">Профиль</p>
+                    <div class="sort-block-div">
+                        <p><a href="{% url 'profile' %}">Профиль</a></p>
+                        <p><a href="{% url 'current_sites' %}">Сайты</a></p>
+                        <p><a href="{% url 'update_pswd' %}">Обновление пароля</a></p>
+                        <p><a href="{% url 'logout' %}" >Выход</a></p>
+                        <p><a href="{% url 'delete' %}">Удаление</a></p>
+                    </div>
+                </div>
+
+                <div class="profile-right">
+                    
+                    {% if update_pswd %}
+                        <div class="form-update-password profile-item" id="profile2">
+                            <h2 class="profile-h2">Изменить пароль</h2>
+                            <form  action="{% url 'update_pswd' %}"  method="POST" class="form-pass">
+                                    {% csrf_token %}
+                                    {{ form.as_p }}
+                                    <p><input type="submit" class="send-button" value="Изменить пароль"></p>
+                            </form> 
+                        </div>
+                    {% elif check_sites %}
+                        <div class="profile-sites profile-item" id="profile3">
+                            <h2 class="profile-h2">Проанализированные сайты:</h2>
+                            {% if sites %}
+                                <div class="profile-sites-in">
+                                    {% for site in sites %}
+                                    <div><a href="/{{ site|get_domen_profile }}">{{ site }}</a></div>
+                                    {% endfor %}
+                                </div>
+                                <button class="button-more">Показать ещё</button>
+                            {% else %}
+                                <p>Нет сайтов.</p>
+                            {% endif %}
+                        </div>
+                    {% elif check_delete %}
+                        <div class="profile-item">
+                            <h2 class="profile-h2">Удаление акаунта</h2>
+                            <form action="" method="POST" class="form-pass">
+                                {% csrf_token %}
+                                <p>Вы действительно хотите удалить аккаунт пользователя - <br>"<strong>{{ user.email }}</strong>"?</p>
+                                <p class="block-captcha {% if form.captcha.errors %}p-error{% endif %}">
+                                    {{ form.captcha.label_tag }}{{ form.captcha }}
+                                    {% for error in form.captcha.errors %}
+                                        <span class="span-error">{{ error }}</span>
+                                    {% endfor %}
+                                </p>
+                                <p><input type="submit" value="Подтвердить" class="send-button"></p>
+                            </form>
+                        </div>
+                    {% else %}
+                        <div class="profile-item" id="profile1">
+                            <h2 class="profile-h2">Профиль</h2>
+                            <div class="block-avatar">
+                                {% if user.image %}
+                                    <img src="{{ user.image.url }}" width="120" alt="Аватар">
+                                {% else %}
+                                    <img src="{% static 'assets/images/default_avatar.jpg' %}" width="120" alt="">
+                                {% endif %}
+                            </div>
+                            <form action="{% url 'profile' %}"  method="POST" class="form-profile" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ next }}">
+                                <div class="field-error">{{ form.non_field_errors }}</div>
+                                {% for field in form %}
+                                    <p {% if field.errors %}class="p-error"{% endif %}>
+                                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                        {{ field }}
+                                        {% if field.help_text %}
+                                            <span class="span-help-text">{{ field.help_text }}</span>
+                                        {% endif %}
+                                        {% for error in field.errors %}
+                                            <span class="span-error">{{ error }}</span>
+                                        {% endfor %}
+                                    </p>
+                                {% endfor %}
+                                <p><input type="submit" class="send-button" value="Сохранить"></p>
+                                
+                            </form> 
+    
+                        </div>
+                    {% endif %}
+
+            {% endif %}
+        </div>
+        </div>
+    </div>
+    </div>
+</section>
+<section class="title-wraper">
+	<div class="title-main center">
+		<h2 class="h-title">Анализ сайта</h2>
+		<div class="title-text">
+			<p>Проверка показателей сайта. Инструмент для продвижения в поисковых системах.</p>
+		</div>
+	{% include 'inc/analize-form.html' %}
+	</div>
+</section>
+{% endblock %}

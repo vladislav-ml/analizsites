@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load form-analiz %}
+{% load cache %}
+
+{% block title %}{{ main_page.title }} &mdash; {{ block.super }}{% endblock %}
+{% block description %}{{ main_page.description }}{% endblock %}
+{% block content %}
+<section class="title-wraper">
+	<div class="title-main center">
+		<h1 class="h-title">Анализ сайта</h1>
+		<div class="title-text">
+			<p>Проверка показателей сайта. Инструмент для продвижения в поисковых системах.</p>
+		</div>
+	{% show_form_analiz %}
+	</div>
+</section>
+<section class="content-wraper">
+	<div class="content-main center">
+
+		<div class="content-index single-txt">
+			{{ main_page.full_text|safe }}
+		</div>
+
+	</div>
+</section>
+<section class="related-wraper">
+	<div class="related-main center">
+		<h2 class="h-title">Проанализированные сайты</h2>
+		<div class="related-in">
+			{% for site in sites %}
+				<p><a href="/{{ site|get_decode }}">{{ site|get_decode }}</a></p>
+			{% endfor %}
+		</div>
+	</div>
+</section>
+{% endblock %}

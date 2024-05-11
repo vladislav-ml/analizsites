@@ -1,0 +1,17 @@
+<div class="title-form">
+    <form action="{% url 'analiz' %}" method="post" class="send-form">
+        {% csrf_token %}
+        <div class="block-flex">
+            <p>{{ form.schema }}</p>
+            <p>{{ form.url }}</p>
+        </div>
+        {% if not context.user.is_authenticated %}
+            <p class="block-captcha">
+                <label>{{ form.captcha.label }}</label>
+                {{ form.captcha }}
+            </p>
+        {% endif %}
+        <div class="block-error">Ошибка! Попробуйте позже.</div>
+        <p><input type="submit" class="send-button" value="Анализировать"></p>
+    </form>
+</div>

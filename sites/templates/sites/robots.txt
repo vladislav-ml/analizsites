@@ -1,0 +1,14 @@
+User-agent: *
+Disallow: /search/   
+Disallow: /*?
+Disallow: /?s=
+Disallow: /?page=
+Disallow: *utm*=       
+Disallow: /*.pdf$
+Disallow: /*.doc$
+Disallow: /*.docx$
+Allow: /*.css
+Allow: /*.js
+
+Sitemap: https://analizsites.ru/sitemap.xml
+Host: https://analizsites.ru
